@@ -1,0 +1,57 @@
+Start at this url:
+http://peoplesoft.havas.us:10800/psp/fspseuro/EMPLOYEE/ERP/?cmd=login&languageCd=ENG&/&
+enter the following in boxes:
+//*[@id="userid"]
+//*[@id="pwd"]
+click on:
+/html/body/table/tbody/tr[2]/td/table/tbody/tr[1]/td/table/tbody/tr/td/table/tbody/tr[1]/td[1]/table[2]/tbody/tr[5]/td[3]/input
+to post
+
+on next page, click ("Employee Self-Service")
+//*[@id="Nav"]/table/tbody/tr[5]/td/table/tbody/tr/td/a[2]
+
+then ("Travel and Expense Center")
+/html/body/table/tbody/tr/td/table/tbody/tr[10]/td/table/tbody/tr/td[4]/a
+
+then ("Create" under "Time Report")
+/html/body/table/tbody/tr/td/table/tbody/tr[3]/td/table/tbody/tr[2]/td/table/tbody/tr[1]/td[2]/table/tbody/tr/td/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td/table/tbody/tr[1]/td[3]/a
+
+then enter period date in the input box
+//*[@id="EX_TIME_ADD_VW_PERIOD_END_DT"]
+and click
+//*[@id="#ICSearch"]
+to submit:
+
+verify that the date on the next page is :
+//*[@id="ACE_width"]/tbody/tr[9]/td[2]/span
+and click
+//*[@id="EX_ICLIENT_WRK_OK_PB"]
+
+now we select job numbers:
+//*[@id="EWW_DERIVED_EWW_ALLOW_COPY$0"]
+//*[@id="EWW_DERIVED_EWW_ALLOW_COPY$4"]
+based on the values here (prepended by 5 zeros "0000055825")
+//*[@id="EWW_MY_PROJ_VW$scrolli$0"]/tbody/tr[2]/td/table/tbody/tr[2]/td[7]/span
+//*[@id="EWW_MY_PROJ_VW$scrolli$0"]/tbody/tr[2]/td/table/tbody/tr[6]/td[7]/span
+
+and click this ("OK"):
+//*[@id="EWW_DERIVED_OK_PB"]
+
+Now the project ID numbers are in rows here, corresponding to TIME$0 and TIME$1
+//*[@id="EX_TIME_DTL$scrolli$0"]/tbody/tr[2]/td[4]/span
+//*[@id="EX_TIME_DTL$scrolli$0"]/tbody/tr[3]/td[4]/span
+
+for project #1 on monday time reference "Mo\n\n8"
+//*[@id="EX_TIME_DTL$scrolli$0"]/tbody/tr[1]/th[6]/a
+fill in box
+//*[@id="TIME1$0"]
+for project #2
+//*[@id="TIME1$1"]
+
+For Tu\n\n9:
+//*[@id="TIME2$0"]
+
+Then save for later:
+//*[@id="EX_ICLIENT_WRK_SAVE_PB"]
+
+
