@@ -44,13 +44,15 @@ weektime = json.load(f)
 #	weektimejson = togglapireply.read()
 #	weektime = json.loads(weektimejson)
 
+errorlist = []
+
 entrylist = {}
 for entry in weektime["data"]:
 	startdate = dateutil.parser.parse(entry["start"])
 	try:
-		(dayofweek,project,minutes) = (startdate.date(), entry["project"]["name"][0:5], entry["duration"])
+		(dayofweek,project,minutes) = (str(startdate.date()), "00000"+str(entry["project"]["name"][0:5]), entry["duration"])
 	except:
-		print "Warning, no project associated with {0} ({1})".format(entry["description"], entry["start"])
+		errorlist.append("Warning, no project associated with {0} ({1})".format(entry["description"], entry["start"]))
 		pass
 	if minutes<0: minutes=0;
 	if dayofweek not in entrylist:
@@ -59,8 +61,11 @@ for entry in weektime["data"]:
 		entrylist[dayofweek][project] = 0
 	entrylist[dayofweek][project] = entrylist[dayofweek][project] + minutes
 
-print "\t" + "\t".join(sorted([str(k)[5:] for k in entrylist.keys()]))
-jobslist = sorted(list(set(reduce(lambda x,y:x+y,[entrylist[x].keys() for x in sorted(entrylist.keys())]))))
-for job in jobslist:
-	print job + "\t" + "\t".join([str(ceil((entrylist[k][job]/3600.0)*4)/4) if (job in entrylist[k]) else '0' for k in sorted(entrylist.keys())])
+for x in entrylist.keys():
+	for y in entrylist[x].keys():
+		entrylist[x][y] = str(ceil((entrylist[x][y]/3600.0)*4)/4) if (y in entrylist[x]) else '0'
 
+jobslist = sorted(list(set(reduce(lambda x,y:x+y,[entrylist[x].keys() for x in sorted(entrylist.keys())]))))
+
+print json.dumps({'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist})
+#print json.dumps(entrylist)
