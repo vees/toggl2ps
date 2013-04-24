@@ -9,6 +9,12 @@ import urllib
 import urllib2
 
 def convert_json(weekending, apikey):
+	try:
+		return convert_json_internal(weekending, apikey)
+	except:
+		return json.dumps({'jobs' : [], 'entries' : [], 'errors' : ['Invalid inputs or parse failed']}, sort_keys=True, indent=4)
+
+def convert_json_internal(weekending,apikey):
 	weekending = dateutil.parser.parse(str(weekending))
 	end_date = (weekending+datetime.timedelta(days=1)-datetime.timedelta(seconds=1)).isoformat() + "-04:00"
 	start_date = (weekending-datetime.timedelta(days=6)).isoformat() + "-04:00"
@@ -60,7 +66,7 @@ def convert_json(weekending, apikey):
 		jobslist = {}
 		errorlist.append("Warning: No time entries found")
 
-	return json.dumps({'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist})
+	return json.dumps({'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist}, sort_keys=True, indent=4)
 	#print json.dumps(entrylist)
 
 if __name__ == "__main__":
