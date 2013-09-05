@@ -9,10 +9,11 @@ import urllib
 import urllib2
 
 def convert_json(weekending, apikey):
-	try:
-		return convert_json_internal(weekending, apikey)
-	except:
-		return json.dumps({'jobs' : [], 'entries' : [], 'errors' : ['Invalid inputs or parse failed']}, sort_keys=True, indent=4)
+	#try:
+	return convert_json_internal(weekending, apikey)
+	#except Exception as e:
+	#	raise e
+	#	return json.dumps({'jobs' : [], 'entries' : [], 'errors' : ['Invalid inputs or parse failed']}, sort_keys=True, indent=4)
 
 def convert_json_internal(weekending,apikey):
 	weekending = dateutil.parser.parse(str(weekending))
@@ -21,11 +22,12 @@ def convert_json_internal(weekending,apikey):
 
 	get_params = {
 		'start_date' : start_date,
-		'end_date'   : end_date
+		'end_date'   : end_date,
+		'with_related_data' : 'true'
 	}
 
 	params = urllib.urlencode(get_params)
-	r = urllib2.Request("https://www.toggl.com/api/v6/time_entries.json?%s" % params)
+	r = urllib2.Request("https://www.toggl.com/api/v8/time_entries?%s" % params)
 	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
 	r.add_header("Authorization", "Basic %s" % base64string)   
 
@@ -39,13 +41,36 @@ def convert_json_internal(weekending,apikey):
 	#	weektimejson = togglapireply.read()
 	#	weektime = json.loads(weektimejson)
 
+	# walk the entry list to get a list of the project names from that API
+	get_params = {
+		'with_related_data': 'true'
+	}
+	params = urllib.urlencode(get_params)
+	r = urllib2.Request("https://www.toggl.com/api/v8/me?%s" % params)
+	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
+	r.add_header("Authorization", "Basic %s" % base64string)   
+
+	#params = urllib.urlencode(post_params)
+	f = urllib2.urlopen(r)
+	#print f.read()
+	projectlist = json.load(f)
+
+	#print projectlist["data"]["projects"]
+	projecthash = {}
+	for project in projectlist["data"]["projects"]:
+		projecthash[project["id"]] = project["name"]
+
+	#print projecthash
+
 	errorlist = []
 
 	entrylist = {}
-	for entry in weektime["data"]:
+	for entry in weektime:
 		startdate = dateutil.parser.parse(entry["start"])
 		try:
-			(dayofweek,project,minutes) = (str(startdate.date()), "00000"+str(entry["project"]["name"][0:5]), entry["duration"])
+			#print entry
+			#print entry[u"duration"]
+			(dayofweek,project,minutes) = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry[u"duration"])
 		except:
 			errorlist.append("Warning: no project associated with {0} ({1})".format(entry["description"], entry["start"]))
 			pass
