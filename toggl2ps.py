@@ -2,6 +2,7 @@ from math import ceil
 import json
 import dateutil.parser
 import datetime
+from dateutil import tz
 from ConfigParser import SafeConfigParser
 import sys
 import base64
@@ -23,7 +24,7 @@ def convert_json_internal(weekending,apikey):
 	get_params = {
 		'start_date' : start_date,
 		'end_date'   : end_date,
-		'with_related_data' : 'true'
+		#'with_related_data' : 'true'
 	}
 
 	params = urllib.urlencode(get_params)
@@ -66,7 +67,11 @@ def convert_json_internal(weekending,apikey):
 
 	entrylist = {}
 	for entry in weektime:
+		if 'server_deleted_at' in entry:
+			continue
 		startdate = dateutil.parser.parse(entry["start"])
+		startdate.replace(tzinfo=tz.gettz('UTC'))
+		startdate = startdate.astimezone(tz.gettz('America/New York'))
 		try:
 			#print entry
 			#print entry[u"duration"]
@@ -91,7 +96,7 @@ def convert_json_internal(weekending,apikey):
 		jobslist = {}
 		errorlist.append("Warning: No time entries found")
 
-	return json.dumps({'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist}, sort_keys=True, indent=4)
+	return json.dumps({'weektime': weektime, 'projectlist': projectlist, 'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist}, sort_keys=True, indent=4)
 	#print json.dumps(entrylist)
 
 if __name__ == "__main__":
