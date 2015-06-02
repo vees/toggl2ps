@@ -1,14 +1,18 @@
 {
-  "name": "toggl-button",
-  "version": "0.2.13",
-  "description": "Add Toggl one-click time tracking to popular web tools.",
-  "license": "BSD-3-Clause",
-  "private": true,
-  "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-crx": "~0.3.3",
-    "grunt-jslint": "~1.1.8",
-    "grunt-contrib-compress": "~0.7.0",
-    "jslint": "~0.5.2"
+  "manifest_version": 2,
+  "name": "toggl2ps",
+  "version": "0.0.1",
+  "icons": { "16": "icon16.png",
+           "48": "icon48.png",
+          "128": "icon128.png" },
+  "description": "Import Toggl time into Havas Peoplesoft.",
+  "permissions": [
+    "activeTab",
+    "http://peoplesoft.havas.us:10800/"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Click to enter time"
   }
 }
