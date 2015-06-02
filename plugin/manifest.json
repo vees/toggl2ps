@@ -15,5 +15,9 @@
     "default_popup": "popup.html",
     "default_title": "Click to enter time"
   },
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "content_scripts": [ {
+    "js": [ "jquery.min.js", "background.js" ],
+    "matches": [ "http://*/*", "https://*/*"]
+  }]
 }
