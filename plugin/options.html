@@ -1,0 +1,19 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <script type="text/javascript" src="options.js"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+      Toggl API Key <input type="text" name="togglApiKey" id="togglApiKey">
+      <input type="button" value="Save" id="optionsSaveButton" />
+  </body>
+</html>
+
