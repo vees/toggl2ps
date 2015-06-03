@@ -1,5 +1,6 @@
 from math import ceil
 import json
+import time
 import dateutil.parser
 import datetime
 from dateutil import tz
@@ -30,7 +31,7 @@ def convert_json_internal(weekending,apikey):
 	params = urllib.urlencode(get_params)
 	r = urllib2.Request("https://www.toggl.com/api/v8/time_entries?%s" % params)
 	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
-	r.add_header("Authorization", "Basic %s" % base64string)   
+	r.add_header("Authorization", "Basic %s" % base64string)
 
 	#params = urllib.urlencode(post_params)
 	f = urllib2.urlopen(r)
@@ -49,7 +50,7 @@ def convert_json_internal(weekending,apikey):
 	params = urllib.urlencode(get_params)
 	r = urllib2.Request("https://www.toggl.com/api/v8/me?%s" % params)
 	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
-	r.add_header("Authorization", "Basic %s" % base64string)   
+	r.add_header("Authorization", "Basic %s" % base64string)
 
 	#params = urllib.urlencode(post_params)
 	f = urllib2.urlopen(r)
@@ -97,13 +98,23 @@ def convert_json_internal(weekending,apikey):
 		for y in entrylist[x].keys():
 			entrylist[x][y] = str(ceil((entrylist[x][y]/3600.0)*4)/4) if (y in entrylist[x]) else '0'
 
+	listbyjob = {}
+	for x in entrylist.keys():
+		x2 = time.strptime(x,"%Y-%m-%d").tm_wday+6
+		for y in entrylist[x].keys():
+			if (y not in listbyjob):
+				listbyjob[y] = {}
+			listbyjob[y][x2] = entrylist[x][y]
+
+	# If there are any projects with time in the entry list
+	# this function simply creates a list of the job numbers
 	if len(entrylist.keys())>0:
 		jobslist = sorted(list(set(reduce(lambda x,y:x+y,[entrylist[x].keys() for x in sorted(entrylist.keys())]))))
 	else:
 		jobslist = {}
 		errorlist.append("Warning: No time entries found")
 
-	return json.dumps({'weektime': weektime, 'projectlist': projectlist, 'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist}, sort_keys=True, indent=4)
+	return json.dumps({'jobs' : jobslist, 'entries' : entrylist, 'errors' : errorlist, 'listbyjob': listbyjob }, sort_keys=True, indent=4)
 	#print json.dumps(entrylist)
 
 if __name__ == "__main__":
