@@ -67,6 +67,7 @@ def convert_json_internal(weekending,apikey):
 
 	entrylist = {}
 	for entry in weektime:
+		minutes=0
 		if 'server_deleted_at' in entry:
 			continue
 		startdate = dateutil.parser.parse(entry["start"])
@@ -76,13 +77,16 @@ def convert_json_internal(weekending,apikey):
 			#print entry
 			#print entry[u"duration"]
 			print entry
-			(dayofweek,project,minutes) = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry[u"duration"])
-			print (dayofweek,project,minutes)
+			dayofweek,project,minutes = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry[u"duration"])
+			print dayofweek,project,minutes
 		except:
 			errorlist.append("Warning: no project associated with {0} ({1})".format(entry["description"], entry["start"]))
 			print errorlist
 			pass
-		if minutes<0: minutes=0
+		try:
+			if minutes<0: minutes=0
+		except NameError:
+			minutes=0
 		if dayofweek not in entrylist:
 			entrylist[dayofweek] = {}
 		if project not in entrylist[dayofweek]:
