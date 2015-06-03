@@ -26,8 +26,9 @@ Other example code:
 https://github.com/mbbx6spp/github-chrome-extension
 
 
+##### IMPORTANT NOTE #############
 
-
+In Developer Tools on Chrome the context must be set to toggl2ps
 
 within Javascript
 
@@ -39,3 +40,74 @@ frameDocument.body.children[2]
 
 http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
 
+frameDocument.getElementById('EWW_MY_PROJ_VW\\$scrolli\\$0').innerHTML
+
+$('.PSLEVEL1GRIDODDROW:nth-child(7)')
+
+	var  $rows = $(".PSLEVEL1GRIDWBO .PSLEVEL1GRID").find('tr')
+		,$projectColumns = $rows.find('td:nth-child(7)')
+		,projectRows = [];
+
+	$projectColumns.each(function () {
+		this.setAttribute('data-projectID', this.textContent.replace(/^\s\s*/, '').replace(/\s\s*$/, '')); //the project numbers have random white-space around them
+	}).each(function() { console.log(this.getAttribute('data-projectid')); })
+
+
+
+
+
+To process this week
+
+$("#ACE_width .PSTEXT")
+yields
+<span class="PSTEXT">05/31/2015</span>
+
+in table
+
+$("#EX_TIME_DTL\\$scrolli\\$0")
+
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr').find('td:nth-child(4)')
+Gives list of project numbers as each
+<td align="left" class="PSLEVEL1GRIDODDROW">
+<span class="PSEDITBOX_DISPONLY">0000066138</span>
+</td>
+
+
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr').find('td:nth-child(4) .PSEDITBOX_DISPONLY')
+
+
+
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr').find('td:nth-child(6) input')[0].value=3
+
+
+Monday=6
+Tuesday=7
+Wednesday=8
+Thursday=9
+Friday=10
+Saturday=11
+Sunday=12
+
+
+//Validate the project number
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr').find('td:nth-child(4)').find('span')[0].textContent
+0000063948
+
+//Set the time for Monday (6) to 8.5
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr').find('td:nth-child(6) input')[0].value=8.5
+
+
+
+//Validate the project number
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr:nth-child(2)').find('td:nth-child(4) span')[0].textContent
+
+//Read the time for Monday(6)
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr:nth-child(2)').find('td:nth-child(6) input')[0].value
+
+
+// Incorporates value in here for filter
+$("#EX_TIME_DTL\\$scrolli\\$0").find('tr:nth-child(2)').find('td:nth-child(4)').parent('').find('td:nth-child(6) input')[0].value='7.0'
+
+chrome.runtime.sendMessage({method: "getLocalStorage", key: "togglApiKey"}, function(response) {
+  console.log(response.data);
+});

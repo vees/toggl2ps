@@ -38,7 +38,7 @@
 		console.log("<ul>"+errorList+"</ul>");
 	}
 
-	var END_DATE = '2014-05-31';
+	var END_DATE = '2015-05-31';
 	var API_KEY = '3c0de9ddaf96d8562f6288df46d75525';
 
 	$.getJSON("https://vees.net/apps/toggl/"+API_KEY+"/"+END_DATE+"/", validateProjects);
