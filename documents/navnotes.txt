@@ -1,0 +1,28 @@
+//*[@id="PAGEBAR"]/table/tbody/tr/td[1]/input
+
+Add the following 
+<td width="80%">Week ending: <input type="text"></td>
+
+When element
+//*[@id="EWW_MY_PROJ_VW$scrolli$0"]/tbody/tr[2]/td/table/tbody/tr[2]/td[7]/span
+
+Contains the value of the project # then navigate to
+//*[@id="EWW_DERIVED_EWW_ALLOW_COPY$1"]
+
+and click the checkbox
+
+That example was the first row (row 1)
+
+The 12th row would be
+
+//*[@id="EWW_MY_PROJ_VW$scrolli$0"]/tbody/tr[2]/td/table/tbody/tr[13]/td[7]/span
+
+corresponding to
+
+//*[@id="EWW_DERIVED_EWW_ALLOW_COPY$11"]
+which is contained in
+
+//*[@id="EWW_MY_PROJ_VW$scrolli$0"]/tbody/tr[2]/td/table/tbody/tr[13]/td[2]
+
+So using 
+
