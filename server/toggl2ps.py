@@ -76,11 +76,14 @@ def convert_json_internal(weekending,apikey):
 		try:
 			#print entry
 			#print entry[u"duration"]
+			print entry
 			(dayofweek,project,minutes) = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry[u"duration"])
+			print (dayofweek,project,minutes)
 		except:
 			errorlist.append("Warning: no project associated with {0} ({1})".format(entry["description"], entry["start"]))
+			print errorlist
 			pass
-		if minutes<0: minutes=0;
+		if minutes<0: minutes=0
 		if dayofweek not in entrylist:
 			entrylist[dayofweek] = {}
 		if project not in entrylist[dayofweek]:
@@ -125,6 +128,7 @@ if __name__ == "__main__":
 		try:
 			apikey = parser.get('toggl','apikey')
 		except:
+			print "Failed"
 			exit()
 
 	print convert_json(weekending,apikey)
