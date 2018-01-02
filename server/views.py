@@ -1,5 +1,5 @@
 # Create your views here.
-import toggl2ps
+from . import toggl2ps
 from django.http import HttpResponse
 
 def index(request, weekending, apikey):

@@ -4,11 +4,12 @@ import time
 import dateutil.parser
 import datetime
 from dateutil import tz
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 import sys
 import base64
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
+from functools import reduce
 
 def convert_json(weekending, apikey):
 	#try:
@@ -28,13 +29,14 @@ def convert_json_internal(weekending,apikey):
 		#'with_related_data' : 'true'
 	}
 
-	params = urllib.urlencode(get_params)
-	r = urllib2.Request("https://www.toggl.com/api/v8/time_entries?%s" % params)
-	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
+	params = urllib.parse.urlencode(get_params)
+	r = urllib.request.Request("https://www.toggl.com/api/v8/time_entries?%s" % params)
+	authbytes = ('%s:%s' % (apikey, 'api_token')).encode()
+	base64string = base64.encodestring(authbytes).decode().replace('\n', '')
 	r.add_header("Authorization", "Basic %s" % base64string)
 
 	#params = urllib.urlencode(post_params)
-	f = urllib2.urlopen(r)
+	f = urllib.request.urlopen(r)
 	#print f.read()
 	weektime = json.load(f)
 
@@ -47,13 +49,14 @@ def convert_json_internal(weekending,apikey):
 	get_params = {
 		'with_related_data': 'true'
 	}
-	params = urllib.urlencode(get_params)
-	r = urllib2.Request("https://www.toggl.com/api/v8/me?%s" % params)
-	base64string = base64.encodestring('%s:%s' % (apikey, 'api_token')).replace('\n', '')
+	params = urllib.parse.urlencode(get_params)
+	r = urllib.request.Request("https://www.toggl.com/api/v8/me?%s" % params)
+	authbytes = ('%s:%s' % (apikey, 'api_token')).encode()
+	base64string = base64.encodestring(authbytes).decode().replace('\n', '')
 	r.add_header("Authorization", "Basic %s" % base64string)
 
 	#params = urllib.urlencode(post_params)
-	f = urllib2.urlopen(r)
+	f = urllib.request.urlopen(r)
 	#print f.read()
 	projectlist = json.load(f)
 
@@ -77,12 +80,12 @@ def convert_json_internal(weekending,apikey):
 		try:
 			#print entry
 			#print entry[u"duration"]
-			print entry
-			dayofweek,project,minutes = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry[u"duration"])
-			print dayofweek,project,minutes
+			print(entry)
+			dayofweek,project,minutes = (str(startdate.date()), "00000"+str(projecthash[entry["pid"]][0:5]), entry["duration"])
+			print(dayofweek,project,minutes)
 		except:
 			errorlist.append("Warning: no project associated with {0} ({1})".format(entry["description"], entry["start"]))
-			print errorlist
+			print(errorlist)
 			pass
 		try:
 			if minutes<0: minutes=0
@@ -94,22 +97,22 @@ def convert_json_internal(weekending,apikey):
 			entrylist[dayofweek][project] = 0
 		entrylist[dayofweek][project] = entrylist[dayofweek][project] + minutes
 
-	for x in entrylist.keys():
-		for y in entrylist[x].keys():
+	for x in list(entrylist.keys()):
+		for y in list(entrylist[x].keys()):
 			entrylist[x][y] = str(ceil((entrylist[x][y]/3600.0)*4)/4) if (y in entrylist[x]) else '0'
 
 	listbyjob = {}
-	for x in entrylist.keys():
+	for x in list(entrylist.keys()):
 		x2 = time.strptime(x,"%Y-%m-%d").tm_wday+6
-		for y in entrylist[x].keys():
+		for y in list(entrylist[x].keys()):
 			if (y not in listbyjob):
 				listbyjob[y] = {}
 			listbyjob[y][x2] = entrylist[x][y]
 
 	# If there are any projects with time in the entry list
 	# this function simply creates a list of the job numbers
-	if len(entrylist.keys())>0:
-		jobslist = sorted(list(set(reduce(lambda x,y:x+y,[entrylist[x].keys() for x in sorted(entrylist.keys())]))))
+	if len(list(entrylist.keys()))>0:
+		jobslist = sorted(list(set(reduce(lambda x,y:x+y,[list(entrylist[x].keys()) for x in sorted(entrylist.keys())]))))
 	else:
 		jobslist = {}
 		errorlist.append("Warning: No time entries found")
@@ -132,7 +135,8 @@ if __name__ == "__main__":
 		try:
 			apikey = parser.get('toggl','apikey')
 		except:
-			print "Failed"
+			raise
+			print("Failed")
 			exit()
 
-	print convert_json(weekending,apikey)
+	print(convert_json(weekending,apikey))
